@@ -1,17 +1,32 @@
-import { action, observable } from 'mobx'
+import { action, makeAutoObservable, observable } from 'mobx'
 
 import { buildErrors } from '../../../utils'
+
+// ===================================================
+// Response
+// ===================================================
+export class Response<TResponse> {
+  data?: TResponse
+
+  constructor(res: Awaited<TResponse>) {
+    makeAutoObservable(this)
+    this.setData(res)
+  }
+
+  setData = (res?: Awaited<TResponse>) => {
+    this.data = res
+  }
+}
 
 // ===================================================
 // Query
 // ===================================================
 export class Query<TItem, TPayload> {
-  @observable response = observable<TItem>([])
-  @observable errors = observable<string>([])
+  response = observable<TItem>([])
+  errors = observable<string>([])
 
   constructor(readonly request: (payload?: TPayload) => Promise<TItem[]>) {}
 
-  @action
   makeRequest = async (payload?: TPayload) => {
     try {
       const res = await this.request(payload)
@@ -26,25 +41,29 @@ export class Query<TItem, TPayload> {
 // ===================================================
 // Mutation
 // ===================================================
-export class Mutation<TResponse extends object, TPayload> {
-  @observable response?: TResponse
-  @observable errors = observable<string>([])
+export class Mutation<TResponse, TPayload> {
+  response?: TResponse
+  errors = observable<string>([])
+  submitted = false
 
-  constructor(readonly request: (payload: TPayload) => Promise<TResponse>) {}
+  constructor(private readonly request: (payload: TPayload) => Promise<TResponse>) {
+    makeAutoObservable(this)
+  }
 
-  @action
   makeRequest = async (payload: TPayload) => {
     this.errors.clear()
     try {
       const res = await this.request(payload)
-      this.response = res
+      if (res) {
+        this.response = res
+        this.submitted = true
+      }
     } catch (err) {
       this.errors.replace(buildErrors(err))
       throw err
     }
   }
 
-  @action
   clearResponse = () => {
     this.response = undefined
   }

@@ -24,7 +24,7 @@ export const api = {
   getIssues: async () => mockRequest<IIssue[]>(issues),
 
   createIssue: async (body: ICreateIssueBody) => {
-    if (Math.random() > 0.5) {
+    if (Math.random() > 1) {
       throw new Error('Failed to create...')
     }
 

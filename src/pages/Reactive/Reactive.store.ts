@@ -1,16 +1,26 @@
-import { observable, makeAutoObservable } from 'mobx'
+import { observable, makeAutoObservable, autorun } from 'mobx'
 
-import { ICreateIssueBody, IIssue } from '../../api'
-import { Form, IssueCreateMutation, IssuesQuery } from './modules'
+import { api, ICreateIssueBody, IIssue, IIssuesQuery } from '../../api'
+import { Form, Mutation, Query } from './modules'
 
 class Store {
   list = observable<IIssue>([])
-  listQuery = new IssuesQuery()
-  createMutation = new IssueCreateMutation()
+  listQuery = new Query<IIssue, IIssuesQuery>(api.getIssues)
+  createMutation = new Mutation(api.createIssue)
   createForm = new Form<ICreateIssueBody>()
 
   constructor() {
     makeAutoObservable(this)
+
+    autorun(() => {
+      console.log('this.createMutation', this.createMutation)
+    })
+
+    autorun(async () => {
+      if (this.createForm.submitting) {
+        this.createMutation.makeRequest(this.createForm.values)
+      }
+    })
   }
 }
 

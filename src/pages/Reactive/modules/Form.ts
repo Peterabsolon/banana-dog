@@ -1,5 +1,5 @@
 import { makeAutoObservable, observable } from 'mobx'
-import { ChangeEvent } from 'react'
+import { ChangeEvent, FormEvent } from 'react'
 
 export type TFormValues = { [key: string]: any }
 
@@ -7,8 +7,8 @@ interface IFormProps<TValues extends TFormValues> {
   initialValues?: Partial<TValues>
 }
 
-export class Form<TValues extends TFormValues> {
-  values: TFormValues = {}
+export class Form<TValues extends { [key: string]: any }> {
+  values: TValues
   errors = observable<string>([])
   submitting = false
 
@@ -18,15 +18,17 @@ export class Form<TValues extends TFormValues> {
   }
 
   setValue = (evt: ChangeEvent<HTMLInputElement>) => {
-    this.values[evt.target.name] = evt.target.value
+    const key = evt.target.name as keyof TValues
+    this.values[key] = evt.target.value as TValues[keyof TValues]
   }
 
   reset = () => {
-    this.values = {}
+    this.values = {} as TValues
     this.submitting = false
   }
 
-  submit = async () => {
+  submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
     this.errors.clear()
     this.submitting = true
   }

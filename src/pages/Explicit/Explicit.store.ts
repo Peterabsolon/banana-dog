@@ -1,7 +1,7 @@
 import { observable, makeAutoObservable } from 'mobx'
 
-import { ICreateIssueBody, IIssue } from '../../api'
-import { Form, IssueCreateMutation, IssuesQuery } from './modules'
+import { api, ICreateIssueBody, IIssue, IIssuesQuery } from '../../api'
+import { Form, Mutation, Query } from './modules'
 
 class Store {
   /**
@@ -12,14 +12,16 @@ class Store {
   /**
    * A GQL query to fetch issues
    */
-  listQuery = new IssuesQuery({
+  listQuery = new Query<IIssue, IIssuesQuery>({
+    onRequest: api.getIssues,
     onSuccess: (res) => this.list.replace(res),
   })
 
   /**
    * A GQL mutation to create an issue
    */
-  createMutation = new IssueCreateMutation({
+  createMutation = new Mutation<IIssue, ICreateIssueBody>({
+    onRequest: api.createIssue,
     onSuccess: (res) => this.list.push(res),
   })
 
