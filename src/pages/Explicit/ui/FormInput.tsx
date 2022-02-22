@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import { DetailedHTMLProps, InputHTMLAttributes } from 'react'
 
-import { Form } from '../pages/Explicit/modules'
+import { Form } from '../modules'
 
 type TNativeInputProps = Omit<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,

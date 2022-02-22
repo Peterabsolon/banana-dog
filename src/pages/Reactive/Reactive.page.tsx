@@ -2,8 +2,8 @@ import { observer } from 'mobx-react-lite'
 
 import { IIssue } from '../../api'
 
-import { store } from './Explicit.store'
 import { FormInput, Table } from './ui'
+import { store } from './Reactive.store'
 
 enum Fields {
   Title = 'title',
@@ -42,7 +42,7 @@ const IssueTable = observer(() => (
   </>
 ))
 
-export const ExplicitPage = observer(() => (
+export const ReactivePage = observer(() => (
   <div>
     <IssueCreateForm />
     <IssueTable />
