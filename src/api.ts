@@ -16,7 +16,7 @@ export interface IIssue {
 export interface ICreateIssueBody extends Omit<IIssue, '_id'> {}
 
 const mockRequest = <T extends unknown>(res: T) =>
-  new Promise<T>((resolve) => setTimeout(() => resolve(res), 250))
+  new Promise<T>((resolve) => setTimeout(() => resolve(res), 500))
 
 const issues: IIssue[] = []
 

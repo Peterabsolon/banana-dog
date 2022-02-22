@@ -1,4 +1,4 @@
-import { makeAutoObservable } from 'mobx'
+import { makeAutoObservable, observable, runInAction } from 'mobx'
 import { ChangeEvent, FormEvent } from 'react'
 import { buildErrors } from '../../../utils'
 
@@ -12,38 +12,39 @@ interface IFormProps<TValues extends TFormValues> {
 }
 
 export class Form<TValues extends TFormValues> {
-  _values: TFormValues = {}
+  values: TFormValues = {}
+  errors = observable<string>([])
   submitting = false
-  errors: string[] = []
 
   constructor(readonly props: IFormProps<TValues>) {
     makeAutoObservable(this)
-    this._values = (props.initialValues || {}) as TValues
-  }
-
-  get values(): TValues {
-    return this._values as TValues
+    this.values = (props.initialValues || {}) as TValues
   }
 
   setValue = (evt: ChangeEvent<HTMLInputElement>) => {
-    this._values[evt.target.name] = evt.target.value
+    this.values[evt.target.name] = evt.target.value
   }
 
   reset = () => {
-    this._values = {}
+    this.values = {}
     this.submitting = false
   }
 
   submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    this.errors.clear()
     this.submitting = true
 
     try {
       await this.props.mutation.makeRequest(this.values)
-      this.props.mutation.clearResponse()
-      this.reset()
+
+      runInAction(() => {
+        this.props.mutation.clearResponse()
+        this.reset()
+      })
     } catch (err) {
-      this.errors = buildErrors(err)
+      this.errors.replace(buildErrors(err))
     } finally {
       this.submitting = false
     }
