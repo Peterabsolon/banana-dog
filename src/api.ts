@@ -1,5 +1,7 @@
 import { v4 as uuid } from 'uuid'
 
+import { SHOULD_API_FAIL } from './constants'
+
 export interface IListQuery {
   skip: number
   take: number
@@ -24,7 +26,7 @@ export const api = {
   getIssues: async () => mockRequest<IIssue[]>(issues),
 
   createIssue: async (body: ICreateIssueBody) => {
-    if (Math.random() > 1) {
+    if (window.localStorage.getItem(SHOULD_API_FAIL)) {
       throw new Error('Failed to create...')
     }
 

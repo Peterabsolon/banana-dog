@@ -1,0 +1,1 @@
+export const SHOULD_API_FAIL = 'SHOULD_API_FAIL'

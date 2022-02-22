@@ -1,9 +1,10 @@
 import { observer } from 'mobx-react-lite'
 
 import { IIssue } from '../../api'
+import { Table } from '../../ui'
 
 import { store } from './Explicit.store'
-import { FormInput, Table } from './ui'
+import { FormInput } from './ui'
 
 enum Fields {
   Title = 'title',

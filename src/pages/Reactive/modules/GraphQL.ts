@@ -33,7 +33,6 @@ export class Query<TItem, TPayload> {
       this.response.replace(res)
     } catch (err) {
       this.errors.replace(buildErrors(err))
-      throw err
     }
   }
 }
@@ -60,7 +59,6 @@ export class Mutation<TResponse, TPayload> {
       }
     } catch (err) {
       this.errors.replace(buildErrors(err))
-      throw err
     }
   }
 
