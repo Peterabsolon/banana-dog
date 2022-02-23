@@ -5,7 +5,7 @@ import * as C from '@chakra-ui/react'
 import { IIssue } from '../../modules'
 import { DemoControls, Table } from '../../ui'
 
-import { store } from './ViewDriven.store'
+import { store } from './SuperExplicit.store'
 import { FormInput } from './ui'
 
 enum Fields {
@@ -17,7 +17,7 @@ const IssueCreateForm = observer(() => {
   const { errors } = store
 
   return (
-    <C.Box width={480} mb={3}>
+    <C.Box mb={3} maxWidth={460}>
       <Form onSubmit={store.onSubmit}>
         {({ handleSubmit, submitting, form }) => (
           <form
@@ -45,9 +45,10 @@ const IssueCreateForm = observer(() => {
 
 const IssueTable = observer(() => (
   <>
-    <C.Heading as="h2" fontSize="2xl">
+    <C.Heading as="h2" fontSize="2xl" mt={8} mb={3}>
       Issues
     </C.Heading>
+
     <Table<IIssue>
       rows={store.list}
       columns={[
@@ -58,9 +59,9 @@ const IssueTable = observer(() => (
   </>
 ))
 
-export const ViewDrivenPage = observer(() => (
+export const SuperExplicitPage = observer(() => (
   <C.Box p={4}>
-    <C.Heading as="h1">ViewDriven</C.Heading>
+    <C.Heading as="h1">SuperExplicit</C.Heading>
     <DemoControls />
     <IssueCreateForm />
     <IssueTable />

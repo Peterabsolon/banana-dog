@@ -9,25 +9,27 @@ interface IDemoControlsProps {
 
 export const DemoControls = observer(({ store }: IDemoControlsProps) => {
   return (
-    <C.Box mt={3}>
-      <C.Box mb={3} width={480}>
-        <C.FormLabel>API call delay</C.FormLabel>
-        <C.Input type="number" value={api.fakeDelay} onChange={api.setFakeDelay} />
-      </C.Box>
+    <C.Box my={8}>
+      <C.Heading as="h3" fontSize="xl" mb={3}>
+        Demo controls
+      </C.Heading>
 
-      <C.Box mb={3}>
-        <C.Checkbox checked={api.shoulFail} onChange={api.toggleShouldFail}>
+      <C.Box mb={3} display={['block', 'block', 'flex']} alignItems="center" justifyContent="flex-start">
+        <C.Box display="flex" alignItems="center" mb={[3, 3, 0]}>
+          <C.FormLabel width={180}>API call delay</C.FormLabel>
+          <C.Input type="number" value={api.fakeDelay} onChange={api.setFakeDelay} />
+        </C.Box>
+
+        <C.Checkbox ml={[0, 0, 4]} checked={api.shoulFail} onChange={api.toggleShouldFail}>
           API throw error
         </C.Checkbox>
-      </C.Box>
 
-      {store?.toggleReactions && (
-        <C.Box mt={-2} mb={3}>
-          <C.Checkbox checked={store.react} onChange={store.toggleReactions}>
+        {store?.toggleReactions && (
+          <C.Checkbox ml={4} checked={store.react} onChange={store.toggleReactions}>
             Reactions enabled
           </C.Checkbox>
-        </C.Box>
-      )}
+        )}
+      </C.Box>
     </C.Box>
   )
 })

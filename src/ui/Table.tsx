@@ -28,22 +28,20 @@ const TableRow = observer(<TRow extends IRowBase>({ row, columns }: ITableRowPro
   </C.Tr>
 ))
 
-export const Table = observer(
-  <TRow extends IRowBase>({ rows = [], columns }: ITableProps<TRow>) => (
-    <C.Table width={480}>
-      <C.Thead>
-        <C.Tr>
-          {columns.map((col) => (
-            <C.Th key={col.label}>{col.label}</C.Th>
-          ))}
-        </C.Tr>
-      </C.Thead>
-
-      <C.Tbody data-testid="table-body">
-        {rows.map((row) => (
-          <TableRow<TRow> key={row._id} row={row} columns={columns} />
+export const Table = observer(<TRow extends IRowBase>({ rows = [], columns }: ITableProps<TRow>) => (
+  <C.Table>
+    <C.Thead>
+      <C.Tr>
+        {columns.map((col) => (
+          <C.Th key={col.label}>{col.label}</C.Th>
         ))}
-      </C.Tbody>
-    </C.Table>
-  )
-)
+      </C.Tr>
+    </C.Thead>
+
+    <C.Tbody data-testid="table-body">
+      {rows.map((row) => (
+        <TableRow<TRow> key={row._id} row={row} columns={columns} />
+      ))}
+    </C.Tbody>
+  </C.Table>
+))

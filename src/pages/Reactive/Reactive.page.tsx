@@ -22,7 +22,7 @@ const IssueCreateForm = observer(({ store }: IPropsWithStore) => {
   const { submitting } = createForm
 
   return (
-    <C.Box width={480} mb={3}>
+    <C.Box mb={3} maxWidth={460}>
       <form onSubmit={store.createForm.submit}>
         <C.Heading as="h2" fontSize="2xl" mb={3}>
           Create issue
@@ -41,7 +41,7 @@ const IssueCreateForm = observer(({ store }: IPropsWithStore) => {
 
 const IssueTable = observer(({ store }: IPropsWithStore) => (
   <>
-    <C.Heading as="h2" fontSize="2xl" mb={3}>
+    <C.Heading as="h2" fontSize="2xl" mt={8} mb={3}>
       Issues
     </C.Heading>
 

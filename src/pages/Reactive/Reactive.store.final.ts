@@ -6,18 +6,18 @@ import { logger } from '../../utils'
 
 export interface IEffect {
   /**
-   * The predicate function to run every render.
+   * A predicate function to run every render.
    * When it becomes true, the effect is run.
    */
   when: (outerPredicate?: boolean) => any
 
   /**
-   * The effect to run if predicate becomes true.
+   * An effect to run if predicate becomes true.
    */
   run: Lambda
 
   /**
-   * The optional effect to run if predicate becomes false
+   * An optional effect to run if predicate becomes false
    */
   cleanup?: Lambda
 
@@ -28,7 +28,7 @@ export interface IEffect {
   subEffects?: IEffect[]
 
   /**
-   * Optional effect name, for debugging
+   * An optional effect name, for debugging
    */
   name?: string
 }
@@ -149,4 +149,4 @@ class Store {
 
 export const store = new Store()
 
-export { Store as BulkStore }
+export { Store as FinalSolutionStore }

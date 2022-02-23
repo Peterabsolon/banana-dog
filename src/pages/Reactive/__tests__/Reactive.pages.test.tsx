@@ -4,7 +4,7 @@ import { logger } from '../../../utils/logger'
 
 import { ReactivePage } from '../Reactive.page'
 import { BetterStore } from '../Reactive.store.better'
-import { BulkStore } from '../Reactive.store.bulk'
+import { FinalSolutionStore } from '../Reactive.store.final'
 import { SimpleStore } from '../Reactive.store.simple'
 
 jest.mock('../../../utils/logger', () => ({
@@ -27,7 +27,7 @@ const submitForm = (title: string, priority: string) => {
   fireEvent.click(screen.getByText('Submit'))
 }
 
-const runTest = async (store: SimpleStore | BetterStore | BulkStore) => {
+const runTest = async (store: SimpleStore | BetterStore | FinalSolutionStore) => {
   render(<ReactivePage store={store} />)
 
   const tableBody = screen.getByTestId('table-body')
@@ -63,4 +63,4 @@ const runTest = async (store: SimpleStore | BetterStore | BulkStore) => {
 
 it('SimpleStore works', () => runTest(new SimpleStore()))
 it('BetterStoer works', () => runTest(new BetterStore()))
-it('BulkStore works', () => runTest(new BulkStore()))
+it('BulkStore works', () => runTest(new FinalSolutionStore()))

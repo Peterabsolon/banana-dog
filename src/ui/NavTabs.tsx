@@ -18,7 +18,7 @@ export const NavTabs = ({ tabs, storageKey }: NavTabsProps) => {
 
   return (
     <>
-      <C.Tabs defaultIndex={tabIndex}>
+      <C.Tabs defaultIndex={tabIndex} maxWidth={1024} m="0 auto">
         <C.TabList>
           {tabs.map(({ label }, index) => (
             <C.Tab key={label} onClick={() => handleSetTab(index)}>

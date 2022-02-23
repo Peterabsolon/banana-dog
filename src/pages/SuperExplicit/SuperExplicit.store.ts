@@ -3,7 +3,7 @@ import { observable, makeAutoObservable } from 'mobx'
 import { api, ICreateIssueBody, IIssue } from '../../modules'
 import { buildErrors } from '../../utils'
 
-export class ViewDrivenStore {
+export class SuperExplicitStore {
   // ===================================================
   // State
   // ===================================================
@@ -29,4 +29,4 @@ export class ViewDrivenStore {
   }
 }
 
-export const store = new ViewDrivenStore()
+export const store = new SuperExplicitStore()

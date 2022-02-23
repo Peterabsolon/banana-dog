@@ -17,7 +17,7 @@ const IssueCreateForm = observer(() => {
   const { submitting, errors } = createForm
 
   return (
-    <C.Box width={480} mb={3}>
+    <C.Box mb={3} maxWidth={460}>
       <form onSubmit={store.createForm.submit}>
         <C.Heading as="h2" fontSize="2xl" mb={3}>
           Create issue
@@ -36,13 +36,13 @@ const IssueCreateForm = observer(() => {
 
 const IssueTable = observer(() => (
   <>
-    <C.Heading as="h2" fontSize="2xl">
+    <C.Heading as="h2" fontSize="2xl" mt={8} mb={3}>
       Issues
     </C.Heading>
+
     <Table<IIssue>
       rows={store.list}
       columns={[
-        { dataKey: '_id', label: 'ID' },
         { dataKey: 'title', label: 'Title' },
         { dataKey: 'priority', label: 'Priority' },
       ]}
