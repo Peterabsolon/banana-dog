@@ -51,10 +51,8 @@ export const autorunBulk = (effects: IEffect[], outerPredicate = false): IReacti
         logger.log(`[effect] ${e.name}`)
 
         // Register subeffects only once
-        if (e.subEffects?.length) {
-          if (!disposers.length) {
-            disposers = autorunBulk(e.subEffects)
-          }
+        if (e.subEffects?.length && !disposers.length) {
+          disposers = autorunBulk(e.subEffects)
         }
       } else {
         // Dispose otherwise
