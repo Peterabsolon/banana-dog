@@ -36,7 +36,9 @@ export class Query<TItem, TPayload> {
 interface IMutationProps<TResponse, TPayload> {
   readonly onRequest: (payload: TPayload) => Promise<TResponse>
   readonly onSuccess: (res: TResponse) => void
+  readonly onFailure: (errors: string[]) => void
 }
+
 export class Mutation<TResponse extends object, TPayload> {
   response?: TResponse
   errors = observable<string>([])
@@ -52,7 +54,9 @@ export class Mutation<TResponse extends object, TPayload> {
       this.response = res
       this.props.onSuccess(res)
     } catch (err) {
-      this.errors.replace(buildErrors(err))
+      const errors = buildErrors(err)
+      this.errors.replace(errors)
+      this.props.onFailure(errors)
       throw err
     }
   }

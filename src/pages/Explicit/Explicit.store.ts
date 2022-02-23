@@ -3,11 +3,16 @@ import { observable, makeAutoObservable } from 'mobx'
 import { api, ICreateIssueBody, IIssue, IIssuesQuery } from '../../modules'
 import { Form, Mutation, Query } from './modules'
 
-class Store {
+export class ExplicitStore {
   /**
    * The list of issues to render
    */
   list = observable<IIssue>([])
+
+  /**
+   * The list of server errors
+   */
+  errors = observable<string>([])
 
   /**
    * A GQL query to fetch issues
@@ -23,6 +28,7 @@ class Store {
   createMutation = new Mutation<IIssue, ICreateIssueBody>({
     onRequest: api.createIssue,
     onSuccess: (res) => this.list.push(res),
+    onFailure: (errors) => this.errors.replace(errors),
   })
 
   /**
@@ -40,4 +46,4 @@ class Store {
   toggleReactions = () => {} // used in later demos
 }
 
-export const store = new Store()
+export const store = new ExplicitStore()
