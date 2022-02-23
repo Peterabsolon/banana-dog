@@ -17,6 +17,11 @@ export interface IEffect {
   run: Lambda
 
   /**
+   * The optional effect to run if predicate becomes false
+   */
+  cleanup?: Lambda
+
+  /**
    * A list of subEffects to run when the predicate is true.
    * When predicate becomes false, these effects are disposed.
    */
@@ -29,13 +34,18 @@ export interface IEffect {
 }
 
 export const autorunBulk = (effects: IEffect[]): IReactionDisposer[] =>
-  effects.map((e) =>
-    autorun(async () => {
+  effects.map((e) => {
+    let shouldCleanup = false
+
+    return autorun(async () => {
       let disposers: IReactionDisposer[] = []
 
-      // Run effect when predicate true
+      // Run effect when predicate returns true
       if (e.when()) {
         e.run()
+
+        // Effect was run, cleanup should happen when predicate returns false
+        shouldCleanup = true
 
         // Log effect name for debugging
         logger.log(`[effect] ${e.name}`)
@@ -49,9 +59,14 @@ export const autorunBulk = (effects: IEffect[]): IReactionDisposer[] =>
       } else {
         // Dispose otherwise
         disposers.forEach((disposer) => disposer())
+
+        if (shouldCleanup && e.cleanup) {
+          logger.log(`[cleanup] ${e.name}`)
+          e.cleanup()
+        }
       }
     })
-  )
+  })
 
 class Store {
   list = observable<IIssue>([])
@@ -74,6 +89,9 @@ class Store {
           this.errors.clear()
           this.createMutation.makeRequest(this.createForm.values)
         },
+        cleanup: () => {
+          // ...do something
+        },
         subEffects: [
           {
             name: 'write data',
@@ -81,7 +99,7 @@ class Store {
             run: () => {
               this.list.push(this.createMutation.response!)
               this.createForm.reset()
-              this.createMutation.clearResponse()
+              this.createMutation.reset()
             },
           },
 
@@ -91,7 +109,7 @@ class Store {
             run: () => {
               this.errors.replace(this.createMutation.errors)
               this.createForm.reset()
-              this.createMutation.clearResponse()
+              this.createMutation.reset()
             },
           },
         ],

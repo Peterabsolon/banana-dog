@@ -18,26 +18,29 @@ export class Store {
   constructor() {
     makeAutoObservable(this)
 
-    autorun(() => {
+    autorun(async () => {
       if (this.createForm.submitting) {
         logger.log('[effect] make request')
-        this.createMutation.makeRequest(this.createForm.values)
+        await this.createMutation.makeRequest(this.createForm.values)
+        logger.log('[cleanup] make request')
       }
     })
 
     autorun(() => {
       if (this.createMutation.response) {
         logger.log('[effect] write data')
-        this.createForm.reset()
         this.list.push(this.createMutation.response)
+        this.createForm.reset()
+        this.createMutation.reset()
       }
     })
 
     autorun(() => {
       if (this.createMutation.errors.length) {
         logger.log('[effect] write errors')
-        this.createForm.reset()
         this.errors.replace(this.createMutation.errors)
+        this.createForm.reset()
+        this.createMutation.reset()
       }
     })
   }

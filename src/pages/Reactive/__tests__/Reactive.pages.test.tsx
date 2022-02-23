@@ -43,20 +43,22 @@ const runTest = async (store: SimpleStore | BetterStore | BulkStore) => {
   await within(tableBody).findByText('high')
   expect(tableBody.childElementCount).toBe(1)
   expect(logger.log).toBeCalledWith('[effect] write data')
-  expect(logger.log).toBeCalledTimes(3)
+  expect(logger.log).toBeCalledWith('[cleanup] make request')
+  expect(logger.log).toBeCalledTimes(4)
 
   // Create second issue, again verify two effects run only
   submitForm('second issue', 'medium')
   expect(logger.log).toBeCalledWith('call API...')
   expect(logger.log).toBeCalledWith('[effect] make request')
-  expect(logger.log).toBeCalledTimes(5)
+  expect(logger.log).toBeCalledTimes(6)
 
   // Verify only 2 row rendered and 1 write done
   await within(tableBody).findByText('second issue')
   await within(tableBody).findByText('medium')
   expect(tableBody.childElementCount).toBe(2)
   expect(logger.log).toBeCalledWith('[effect] write data')
-  expect(logger.log).toBeCalledTimes(6)
+  expect(logger.log).toBeCalledWith('[cleanup] make request')
+  expect(logger.log).toBeCalledTimes(8)
 }
 
 it('SimpleStore works', () => runTest(new SimpleStore()))

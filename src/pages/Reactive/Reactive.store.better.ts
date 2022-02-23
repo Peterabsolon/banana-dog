@@ -5,14 +5,20 @@ import { Form, Mutation, Query } from './modules'
 import { logger } from '../../utils'
 
 type TPredicate = () => boolean
-type TBetterAutorun = (predicate: TPredicate, effect: Lambda) => IReactionDisposer
+type TBetterAutorun = (predicate: TPredicate, effect: Lambda, cleanup?: Lambda) => IReactionDisposer
 
-const autorunBetter: TBetterAutorun = (predicate, effect) =>
-  autorun(async () => {
+const autorunBetter: TBetterAutorun = (predicate, effect, cleanup) => {
+  let shouldCleanup = false
+
+  return autorun(async () => {
     if (predicate()) {
       effect()
+      shouldCleanup = true
+    } else if (cleanup && shouldCleanup) {
+      cleanup()
     }
   })
+}
 
 class Store {
   list = observable<IIssue>([])
@@ -31,6 +37,9 @@ class Store {
         logger.log('[effect] make request')
         this.errors.clear()
         this.createMutation.makeRequest(this.createForm.values)
+      },
+      () => {
+        logger.log('[cleanup] make request')
       }
     )
 
@@ -40,6 +49,7 @@ class Store {
         logger.log('[effect] write data')
         this.list.push(this.createMutation.response!)
         this.createForm.reset()
+        this.createMutation.reset()
       }
     )
 
@@ -49,6 +59,7 @@ class Store {
         logger.log('[effect] write errors')
         this.errors.replace(this.createMutation.errors)
         this.createForm.reset()
+        this.createMutation.reset()
       }
     )
   }

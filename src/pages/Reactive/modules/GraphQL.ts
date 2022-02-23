@@ -47,7 +47,8 @@ export class Mutation<TResponse, TPayload> {
     }
   }
 
-  clearResponse = () => {
+  reset = () => {
     this.response = undefined
+    this.errors.clear()
   }
 }
