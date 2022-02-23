@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite'
 
-import { IIssue } from '../../api'
-import { Table } from '../../ui'
+import { IIssue } from '../../modules'
+import { DemoControls, Table } from '../../ui'
 
 import { store } from './Explicit.store'
 import { FormInput } from './ui'
@@ -45,6 +45,8 @@ const IssueTable = observer(() => (
 
 export const ExplicitPage = observer(() => (
   <div>
+    <h1>Explicit</h1>
+    <DemoControls store={store} />
     <IssueCreateForm />
     <IssueTable />
   </div>

@@ -1,21 +1,24 @@
 import { observer } from 'mobx-react-lite'
 
-import { IIssue } from '../../api'
-import { ApiErrorToggle, Table } from '../../ui'
+import { IIssue } from '../../modules'
+import { DemoControls, Table } from '../../ui'
 
 import { FormInput } from './ui'
-import { store } from './Reactive.store'
+import { Store } from './Reactive.store.simple'
 
 enum Fields {
   Title = 'title',
   Priority = 'priority',
 }
 
-const IssueCreateForm = observer(() => {
+// Use dependency injection to pass store for easier testing
+interface IPropsWithStore {
+  store: Store
+}
+
+const IssueCreateForm = observer(({ store }: IPropsWithStore) => {
   const { createForm, errors } = store
   const { submitting } = createForm
-
-  console.log('createForm.submitting', createForm.submitting)
 
   return (
     <form onSubmit={store.createForm.submit}>
@@ -31,7 +34,7 @@ const IssueCreateForm = observer(() => {
   )
 })
 
-const IssueTable = observer(() => (
+const IssueTable = observer(({ store }: IPropsWithStore) => (
   <>
     <h2>Issues</h2>
     <Table<IIssue>
@@ -45,15 +48,16 @@ const IssueTable = observer(() => (
   </>
 ))
 
-export const ReactivePage = observer(() => {
-  const { submitting } = store.createForm
+interface IPropsWithStore {
+  name?: string
+  store: Store
+}
 
-  return (
-    <div>
-      Submitting: {submitting ? 'yes' : 'no'}
-      <ApiErrorToggle />
-      <IssueCreateForm />
-      <IssueTable />
-    </div>
-  )
-})
+export const ReactivePage = observer(({ store, name }: IPropsWithStore) => (
+  <div>
+    <h1>{name}</h1>
+    <DemoControls store={store} />
+    <IssueCreateForm store={store} />
+    <IssueTable store={store} />
+  </div>
+))

@@ -1,6 +1,6 @@
 import { observable, makeAutoObservable } from 'mobx'
 
-import { api, ICreateIssueBody, IIssue, IIssuesQuery } from '../../api'
+import { api, ICreateIssueBody, IIssue, IIssuesQuery } from '../../modules'
 import { Form, Mutation, Query } from './modules'
 
 class Store {
@@ -35,6 +35,9 @@ class Store {
   constructor() {
     makeAutoObservable(this)
   }
+
+  react = true
+  toggleReactions = () => {} // used in later demos
 }
 
 export const store = new Store()

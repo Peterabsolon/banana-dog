@@ -38,7 +38,7 @@ export const Table = observer(
         </tr>
       </thead>
 
-      <tbody>
+      <tbody data-testid="table-body">
         {rows.map((row) => (
           <TableRow<TRow> key={row._id} row={row} columns={columns} />
         ))}
