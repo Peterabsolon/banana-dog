@@ -9,7 +9,7 @@ export interface IEffect {
    * The predicate function to run every render.
    * When it becomes true, the effect is run.
    */
-  when: () => boolean
+  when: (outerPredicate?: boolean) => any
 
   /**
    * The effect to run if predicate becomes true.
@@ -33,7 +33,7 @@ export interface IEffect {
   name?: string
 }
 
-export const autorunBulk = (effects: IEffect[]): IReactionDisposer[] =>
+export const autorunBulk = (effects: IEffect[], outerPredicate = false): IReactionDisposer[] =>
   effects.map((e) => {
     let shouldCleanup = false
 
@@ -41,7 +41,7 @@ export const autorunBulk = (effects: IEffect[]): IReactionDisposer[] =>
       let disposers: IReactionDisposer[] = []
 
       // Run effect when predicate returns true
-      if (e.when()) {
+      if (Boolean(e.when(outerPredicate))) {
         e.run()
 
         // Effect was run, cleanup should happen when predicate returns false
@@ -75,12 +75,16 @@ class Store {
   createForm = new Form<ICreateIssueBody>()
   errors = observable<string>([])
 
-  react = false
+  react = true
   disposers: IReactionDisposer[] = []
 
   constructor() {
     makeAutoObservable(this)
 
+    this.setup()
+  }
+
+  setup = () => {
     this.disposers = autorunBulk([
       {
         name: 'make request',
@@ -95,7 +99,13 @@ class Store {
         subEffects: [
           {
             name: 'write data',
-            when: () => Boolean(this.createMutation.response),
+            when: (outerPredicateResult) => {
+              // Here we could use `outerPredicateResult` to do stuff.
+              // Unsure how useful it would be since in this implementation
+              // the effect won't be run if it's false anyway.
+
+              return this.createMutation.response
+            },
             run: () => {
               this.list.push(this.createMutation.response!)
               this.createForm.reset()
@@ -105,7 +115,7 @@ class Store {
 
           {
             name: 'write errors',
-            when: () => Boolean(this.createMutation.errors.length),
+            when: () => this.createMutation.errors.length,
             run: () => {
               this.errors.replace(this.createMutation.errors)
               this.createForm.reset()
@@ -119,6 +129,12 @@ class Store {
 
   toggleReactions = () => {
     this.react = !this.react
+
+    if (this.react) {
+      this.setup()
+    } else {
+      this.disposers.forEach((disposer) => disposer())
+    }
   }
 }
 

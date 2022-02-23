@@ -26,46 +26,60 @@ class Store {
   createMutation = new Mutation(api.createIssue)
   createForm = new Form<ICreateIssueBody>()
   errors = observable<string>([])
+
   react = true
+  disposers: IReactionDisposer[] = []
 
   constructor() {
     makeAutoObservable(this)
 
-    autorunBetter(
-      () => this.createForm.submitting,
-      () => {
-        logger.log('[effect] make request')
-        this.errors.clear()
-        this.createMutation.makeRequest(this.createForm.values)
-      },
-      () => {
-        logger.log('[cleanup] make request')
-      }
-    )
+    this.setup()
+  }
 
-    autorunBetter(
-      () => Boolean(this.createMutation.response),
-      () => {
-        logger.log('[effect] write data')
-        this.list.push(this.createMutation.response!)
-        this.createForm.reset()
-        this.createMutation.reset()
-      }
-    )
+  setup = () => {
+    this.disposers.push(
+      autorunBetter(
+        () => this.createForm.submitting,
+        () => {
+          logger.log('[effect] make request')
+          this.errors.clear()
+          this.createMutation.makeRequest(this.createForm.values)
+        },
+        () => {
+          logger.log('[cleanup] make request')
+        }
+      ),
 
-    autorunBetter(
-      () => Boolean(this.createMutation.errors.length),
-      () => {
-        logger.log('[effect] write errors')
-        this.errors.replace(this.createMutation.errors)
-        this.createForm.reset()
-        this.createMutation.reset()
-      }
+      autorunBetter(
+        () => Boolean(this.createMutation.response),
+        () => {
+          logger.log('[effect] write data')
+          this.list.push(this.createMutation.response!)
+          this.createForm.reset()
+          this.createMutation.reset()
+        }
+      ),
+
+      autorunBetter(
+        () => Boolean(this.createMutation.errors.length),
+        () => {
+          logger.log('[effect] write errors')
+          this.errors.replace(this.createMutation.errors)
+          this.createForm.reset()
+          this.createMutation.reset()
+        }
+      )
     )
   }
 
   toggleReactions = () => {
     this.react = !this.react
+
+    if (this.react) {
+      this.setup()
+    } else {
+      this.disposers.forEach((disposer) => disposer())
+    }
   }
 }
 
