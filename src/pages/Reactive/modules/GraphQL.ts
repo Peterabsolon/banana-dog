@@ -1,22 +1,6 @@
-import { action, makeAutoObservable, observable } from 'mobx'
+import { makeAutoObservable, observable } from 'mobx'
 
 import { buildErrors } from '../../../utils'
-
-// ===================================================
-// Response
-// ===================================================
-export class Response<TResponse> {
-  data?: TResponse
-
-  constructor(res: Awaited<TResponse>) {
-    makeAutoObservable(this)
-    this.setData(res)
-  }
-
-  setData = (res?: Awaited<TResponse>) => {
-    this.data = res
-  }
-}
 
 // ===================================================
 // Query
@@ -52,6 +36,7 @@ export class Mutation<TResponse, TPayload> {
   makeRequest = async (payload: TPayload) => {
     this.errors.clear()
     try {
+      console.log('call API...')
       const res = await this.request(payload)
       if (res) {
         this.response = res

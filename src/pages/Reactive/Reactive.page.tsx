@@ -15,6 +15,8 @@ const IssueCreateForm = observer(() => {
   const { createForm, errors } = store
   const { submitting } = createForm
 
+  console.log('createForm.submitting', createForm.submitting)
+
   return (
     <form onSubmit={store.createForm.submit}>
       <h2>Create issue</h2>
@@ -44,8 +46,11 @@ const IssueTable = observer(() => (
 ))
 
 export const ReactivePage = observer(() => {
+  const { submitting } = store.createForm
+
   return (
     <div>
+      Submitting: {submitting ? 'yes' : 'no'}
       <ApiErrorToggle />
       <IssueCreateForm />
       <IssueTable />

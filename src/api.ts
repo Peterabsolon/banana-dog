@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid'
 
-import { SHOULD_API_FAIL } from './constants'
+import { API_DELAY, SHOULD_API_FAIL } from './constants'
 
 export interface IListQuery {
   skip: number
@@ -18,7 +18,11 @@ export interface IIssue {
 export interface ICreateIssueBody extends Omit<IIssue, '_id'> {}
 
 const mockRequest = <T extends unknown>(res: T) =>
-  new Promise<T>((resolve) => setTimeout(() => resolve(res), 500))
+  new Promise<T>((resolve) => {
+    const delay = Number(window.localStorage.getItem(API_DELAY) || 500)
+
+    return setTimeout(() => resolve(res), delay)
+  })
 
 const issues: IIssue[] = []
 
@@ -30,8 +34,11 @@ export const api = {
       throw new Error('Failed to create...')
     }
 
-    const issue = { ...body, _id: uuid() }
-    issues.push(issue)
-    return mockRequest<IIssue>(issue)
+    issues.push({
+      _id: uuid(),
+      ...body,
+    })
+
+    return mockRequest<IIssue>(issues[issues.length - 1])
   },
 }

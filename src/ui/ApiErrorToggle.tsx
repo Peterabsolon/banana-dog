@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 
-import { SHOULD_API_FAIL } from '../constants'
+import { SHOULD_API_FAIL, API_DELAY } from '../constants'
 
 export const ApiErrorToggle = () => {
   const [shouldFail, setShouldFail] = useState(Boolean(localStorage.getItem(SHOULD_API_FAIL)))
+  const [apiDelay, setApiDelay] = useState(localStorage.getItem(API_DELAY) || 500)
 
-  const onChange = () => {
+  const handleToggleApiError = () => {
     setShouldFail(!shouldFail)
-
     if (shouldFail) {
       localStorage.removeItem(SHOULD_API_FAIL)
     } else {
@@ -15,10 +15,18 @@ export const ApiErrorToggle = () => {
     }
   }
 
+  const handleSetApiDelay = (evt: ChangeEvent<HTMLInputElement>) => {
+    setApiDelay(evt.target.value)
+    localStorage.setItem(API_DELAY, evt.target.value)
+  }
+
   return (
     <div>
       <label>Should API error:</label>
-      <input type="checkbox" checked={shouldFail} onChange={onChange} />
+      <input type="checkbox" checked={shouldFail} onChange={handleToggleApiError} />
+
+      <label>API call delay:</label>
+      <input type="number" value={apiDelay} onChange={handleSetApiDelay} />
     </div>
   )
 }
