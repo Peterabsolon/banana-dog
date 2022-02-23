@@ -27,8 +27,8 @@ const submitForm = (title: string, priority: string) => {
   fireEvent.click(screen.getByText('Submit'))
 }
 
-const runTest = async (store: SimpleStore | BetterStore) => {
-  render(<ReactivePage store={new BetterStore()} />)
+const runTest = async (store: SimpleStore | BetterStore | BulkStore) => {
+  render(<ReactivePage store={store} />)
 
   const tableBody = screen.getByTestId('table-body')
 
@@ -59,14 +59,6 @@ const runTest = async (store: SimpleStore | BetterStore) => {
   expect(logger.log).toBeCalledTimes(6)
 }
 
-describe('Reactive.simple', () => {
-  it('creates todos', () => runTest(new SimpleStore()))
-})
-
-describe('Reactive.better', () => {
-  it('creates todos', () => runTest(new BetterStore()))
-})
-
-describe('Reactive.bulk', () => {
-  it('creates todos', () => runTest(new BulkStore()))
-})
+it('SimpleStore works', () => runTest(new SimpleStore()))
+it('BetterStoer works', () => runTest(new BetterStore()))
+it('BulkStore works', () => runTest(new BulkStore()))
