@@ -1,4 +1,5 @@
 import { observer } from 'mobx-react-lite'
+import * as C from '@chakra-ui/react'
 
 import { IIssue } from '../../modules'
 import { DemoControls, Table } from '../../ui'
@@ -21,26 +22,32 @@ const IssueCreateForm = observer(({ store }: IPropsWithStore) => {
   const { submitting } = createForm
 
   return (
-    <form onSubmit={store.createForm.submit}>
-      <h2>Create issue</h2>
+    <C.Box width={480} mb={3}>
+      <form onSubmit={store.createForm.submit}>
+        <C.Heading as="h2" fontSize="2xl" mb={3}>
+          Create issue
+        </C.Heading>
 
-      <FormInput required name={Fields.Title} form={createForm} />
-      <FormInput required name={Fields.Priority} form={createForm} />
+        <FormInput required name={Fields.Title} form={createForm} />
+        <FormInput required name={Fields.Priority} form={createForm} />
 
-      <button type="submit">{submitting ? 'Submitting' : 'Submit'}</button>
+        <C.Button type="submit">{submitting ? 'Submitting' : 'Submit'}</C.Button>
 
-      {Boolean(errors.length) && JSON.stringify(errors)}
-    </form>
+        {Boolean(errors.length) && JSON.stringify(errors)}
+      </form>
+    </C.Box>
   )
 })
 
 const IssueTable = observer(({ store }: IPropsWithStore) => (
   <>
-    <h2>Issues</h2>
+    <C.Heading as="h2" fontSize="2xl" mb={3}>
+      Issues
+    </C.Heading>
+
     <Table<IIssue>
       rows={store.list}
       columns={[
-        { dataKey: '_id', label: 'ID' },
         { dataKey: 'title', label: 'Title' },
         { dataKey: 'priority', label: 'Priority' },
       ]}
@@ -54,10 +61,10 @@ interface IPropsWithStore {
 }
 
 export const ReactivePage = observer(({ store, name }: IPropsWithStore) => (
-  <div>
-    <h1>{name}</h1>
+  <C.Box p={4}>
+    <C.Heading as="h1">{name}</C.Heading>
     <DemoControls store={store} />
     <IssueCreateForm store={store} />
     <IssueTable store={store} />
-  </div>
+  </C.Box>
 ))

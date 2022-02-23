@@ -1,20 +1,18 @@
+import { CSSProperties } from 'react'
 import { observer } from 'mobx-react-lite'
-import { DetailedHTMLProps, InputHTMLAttributes } from 'react'
+import * as C from '@chakra-ui/react'
 
 import { Form } from '../modules'
 
-type TNativeInputProps = Omit<
-  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
-  'form'
->
-
-interface IFormInputProps extends TNativeInputProps {
+interface IFormInputProps {
   form: Form<any>
   name: string
+  style?: CSSProperties
+  required?: boolean
 }
 
 export const FormInput = observer(({ name, form, ...rest }: IFormInputProps) => (
-  <input
+  <C.Input
     name={name}
     placeholder={name}
     value={form.values[name] || ''}

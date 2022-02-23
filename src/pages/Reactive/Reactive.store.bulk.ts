@@ -68,7 +68,13 @@ export const autorunBulk = (effects: IEffect[], outerPredicate = false): IReacti
     })
   })
 
+// ===================================================
+// Store
+// ===================================================
 class Store {
+  // ===================================================
+  // Model
+  // ===================================================
   list = observable<IIssue>([])
   listQuery = new Query<IIssue, IIssuesQuery>(api.getIssues)
   createMutation = new Mutation(api.createIssue)
@@ -78,12 +84,17 @@ class Store {
   react = true
   disposers: IReactionDisposer[] = []
 
+  // ===================================================
+  // Constructor
+  // ===================================================
   constructor() {
     makeAutoObservable(this)
-
     this.setup()
   }
 
+  // ===================================================
+  // Actions
+  // ===================================================
   setup = () => {
     this.disposers = autorunBulk([
       {

@@ -1,4 +1,5 @@
 import { observer } from 'mobx-react-lite'
+import * as C from '@chakra-ui/react'
 
 interface IRowBase {
   _id: string
@@ -20,29 +21,29 @@ interface ITableProps<TRow> {
 }
 
 const TableRow = observer(<TRow extends IRowBase>({ row, columns }: ITableRowProps<TRow>) => (
-  <tr>
+  <C.Tr>
     {columns.map((col) => (
-      <td key={col.dataKey.toString()}>{row[col.dataKey]}</td>
+      <C.Td key={col.dataKey.toString()}>{row[col.dataKey]}</C.Td>
     ))}
-  </tr>
+  </C.Tr>
 ))
 
 export const Table = observer(
   <TRow extends IRowBase>({ rows = [], columns }: ITableProps<TRow>) => (
-    <table>
-      <thead>
-        <tr>
+    <C.Table width={480}>
+      <C.Thead>
+        <C.Tr>
           {columns.map((col) => (
-            <th key={col.label}>{col.label}</th>
+            <C.Th key={col.label}>{col.label}</C.Th>
           ))}
-        </tr>
-      </thead>
+        </C.Tr>
+      </C.Thead>
 
-      <tbody data-testid="table-body">
+      <C.Tbody data-testid="table-body">
         {rows.map((row) => (
           <TableRow<TRow> key={row._id} row={row} columns={columns} />
         ))}
-      </tbody>
-    </table>
+      </C.Tbody>
+    </C.Table>
   )
 )

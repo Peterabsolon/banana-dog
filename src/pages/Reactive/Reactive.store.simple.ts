@@ -19,6 +19,10 @@ export class Store {
   constructor() {
     makeAutoObservable(this)
 
+    this.setup()
+  }
+
+  setup = () => {
     this.disposers.push(
       autorun(async () => {
         if (this.createForm.submitting) {
@@ -50,6 +54,12 @@ export class Store {
 
   toggleReactions = () => {
     this.react = !this.react
+
+    if (this.react) {
+      this.setup()
+    } else {
+      this.disposers.forEach((disposer) => disposer())
+    }
   }
 }
 

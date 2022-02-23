@@ -41,9 +41,6 @@ export class ExplicitStore {
   constructor() {
     makeAutoObservable(this)
   }
-
-  react = true
-  toggleReactions = () => {} // used in later demos
 }
 
 export const store = new ExplicitStore()
